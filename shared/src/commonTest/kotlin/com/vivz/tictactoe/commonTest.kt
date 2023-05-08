@@ -1,4 +1,4 @@
-package com.vivz.tictoe
+package com.vivz.tictactoe
 
 import kotlin.test.Test
 import kotlin.test.assertTrue

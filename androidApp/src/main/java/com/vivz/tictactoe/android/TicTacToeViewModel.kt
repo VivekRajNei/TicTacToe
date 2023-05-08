@@ -1,15 +1,15 @@
-package com.vivz.tictoe.android
+package com.vivz.tictactoe.android
 
 import androidx.lifecycle.ViewModel
-import com.vivz.tictoe.GameAction
-import com.vivz.tictoe.GameState
-import com.vivz.tictoe.TicTacToeGameEngine
+import com.vivz.tictactoe.GameAction
+import com.vivz.tictactoe.GameState
+import com.vivz.tictactoe.TicTacToeGameEngine
 
 class TicTacToeViewModel : ViewModel() {
     private val ticTacToeGameEngine = TicTacToeGameEngine()
     val gameState: GameState = ticTacToeGameEngine.currentState
 
     fun handleAction(action: GameAction) {
-        ticTacToeGameEngine.handleAction(action)
+        ticTacToeGameEngine.handleAction(action, state)
     }
 }

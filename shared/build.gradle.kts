@@ -25,7 +25,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.freeletics.flowredux:flowredux:1.0.1")
+                implementation("com.freeletics.flowredux:flowredux:1.0.2")
             }
         }
         val commonTest by getting {

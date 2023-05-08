@@ -1,4 +1,4 @@
-package com.vivz.tictoe
+package com.vivz.tictactoe
 
 class Greeting {
     private val platform: Platform = getPlatform()

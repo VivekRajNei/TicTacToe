@@ -1,4 +1,4 @@
-package com.vivz.tictoe
+package com.vivz.tictactoe
 
 import org.junit.Assert.assertTrue
 import org.junit.Test

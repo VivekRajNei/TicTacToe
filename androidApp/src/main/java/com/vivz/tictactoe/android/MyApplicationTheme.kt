@@ -1,4 +1,4 @@
-package com.vivz.tictoe.android
+package com.vivz.tictactoe.android
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape

@@ -1,4 +1,4 @@
-package com.vivz.tictoe
+package com.vivz.tictactoe
 
 interface Platform {
     val name: String

@@ -1,4 +1,4 @@
-package com.vivz.tictoe
+package com.vivz.tictactoe
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,38 +21,38 @@ class TicToeGameTest {
     @Test
     fun testSecondPlayerTurn() {
         val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0))
+        gameEngine.handleAction(GameAction.MakeMove(0, 0), state)
         assertEquals(gameEngine.currentState, GameState.Player2Turn, "Second player is not Player2")
     }
 
     @Test
     fun testCanPlayerOverrideExistingValue() {
         val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0)) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 0)) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 2
         assertEquals(gameEngine.currentState, GameState.GameOver(2), "Player2 should be win")
     }
 
     @Test
     fun testGamePlayWonByPlayer1() {
         val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0)) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 1)) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 1)) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(1, 2)) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(2, 2)) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(0, 1), state) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(1, 1), state) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(1, 2), state) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(2, 2), state) // Player 1
         assertEquals(gameEngine.currentState, GameState.GameOver(1), "Player1 should be win")
     }
 
     @Test
     fun testGamePlayWonByPlayer2() {
         val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 1)) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 0)) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 2)) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(1, 1)) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 0)) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(2, 2)) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(0, 1), state) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(1, 2), state) // Player 1
+        gameEngine.handleAction(GameAction.MakeMove(1, 1), state) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(1, 0), state) // Player 2
+        gameEngine.handleAction(GameAction.MakeMove(2, 2), state) // Player 2
         assertEquals(gameEngine.currentState, GameState.GameOver(2), "Player2 should be win")
     }
 }
