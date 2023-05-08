@@ -100,4 +100,19 @@ class TicToeGameTest {
             assertEquals(GameOver(Player.TWO), awaitItem(), "Player.TWO should win")
         }
     }
+
+    @Test
+    fun testRestartGameAndCheckGameBoard() = runTest {
+        val gameEngine = TicTacToeGameEngine()
+        val stateMachine = GameStateMachine(gameEngine)
+
+        stateMachine.state.test {
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 0))
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(RestartGame)
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            assertTrue(gameEngine.board.flatten().all { it == 0 }, "Board is not reset after Game Restart")
+        }
+    }
 }
