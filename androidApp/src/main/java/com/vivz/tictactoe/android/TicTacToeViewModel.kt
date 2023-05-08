@@ -7,9 +7,9 @@ import com.vivz.tictactoe.TicTacToeGameEngine
 
 class TicTacToeViewModel : ViewModel() {
     private val ticTacToeGameEngine = TicTacToeGameEngine()
-    val gameState: GameState = ticTacToeGameEngine.currentState
+//    val gameState: GameState = ticTacToeGameEngine.currentState
 
-    fun handleAction(action: GameAction) {
-        ticTacToeGameEngine.handleAction(action, state)
-    }
+//    fun handleAction(action: GameAction) {
+//        ticTacToeGameEngine.handleAction(action, state)
+//    }
 }

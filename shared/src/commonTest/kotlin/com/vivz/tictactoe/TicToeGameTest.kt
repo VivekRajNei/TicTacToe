@@ -1,9 +1,13 @@
 package com.vivz.tictactoe
 
+import app.cash.turbine.test
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TicToeGameTest {
 
     @Test
@@ -13,46 +17,87 @@ class TicToeGameTest {
     }
 
     @Test
-    fun testFirstPlayerTurn() {
-        val gameEngine = TicTacToeGameEngine()
-        assertEquals(gameEngine.currentState, GameState.Player1Turn, "First player is not Player1")
+    fun testFirstPlayerTurn() = runTest {
+        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+        stateMachine.state.test {
+            assertEquals(PlayerTurn(Player.ONE), awaitItem(), "First player is not Player1")
+        }
     }
 
     @Test
-    fun testSecondPlayerTurn() {
-        val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0), state)
-        assertEquals(gameEngine.currentState, GameState.Player2Turn, "Second player is not Player2")
+    fun testSecondPlayerTurn() = runTest {
+        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+
+        stateMachine.state.test {
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 0))
+            assertEquals(PlayerTurn(Player.TWO), awaitItem(), "Second player is not Player2")
+        }
     }
 
     @Test
-    fun testCanPlayerOverrideExistingValue() {
-        val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 2
-        assertEquals(gameEngine.currentState, GameState.GameOver(2), "Player2 should be win")
+    fun testGamePlayWonByPlayer1() = runTest {
+        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+
+        /**
+         * Game board
+         *
+         * +---+---+---+
+         * | 1 | 2 |   |
+         * +---+---+---+
+         * |   | 1 | 2 |
+         * +---+---+---+
+         * |   |   | 1 |
+         * +---+---+---+
+         */
+
+        stateMachine.state.test {
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 0)) // Player 1
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 1)) // Player 2
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(1, 1)) // Player 1
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(MakeMove(1, 2)) // Player 2
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(2, 2)) // Player 1
+
+            assertEquals(GameOver(Player.ONE), awaitItem(), "Player.ONE should win")
+        }
     }
 
     @Test
-    fun testGamePlayWonByPlayer1() {
-        val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 1), state) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 1), state) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(1, 2), state) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(2, 2), state) // Player 1
-        assertEquals(gameEngine.currentState, GameState.GameOver(1), "Player1 should be win")
-    }
+    fun testGamePlayWonByPlayer2() = runTest {
+        val stateMachine = GameStateMachine(TicTacToeGameEngine())
 
-    @Test
-    fun testGamePlayWonByPlayer2() {
-        val gameEngine = TicTacToeGameEngine()
-        gameEngine.handleAction(GameAction.MakeMove(0, 1), state) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(0, 0), state) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 2), state) // Player 1
-        gameEngine.handleAction(GameAction.MakeMove(1, 1), state) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(1, 0), state) // Player 2
-        gameEngine.handleAction(GameAction.MakeMove(2, 2), state) // Player 2
-        assertEquals(gameEngine.currentState, GameState.GameOver(2), "Player2 should be win")
+        /**
+         * Game board
+         *
+         * +---+---+---+
+         * | 2 | 1 |   |
+         * +---+---+---+
+         * | 1 | 2 | 1 |
+         * +---+---+---+
+         * |   |   | 2 |
+         * +---+---+---+
+         */
+
+        stateMachine.state.test {
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 1)) // Player 1
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(MakeMove(0, 0)) // Player 2
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(1, 2)) // Player 1
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(MakeMove(1, 1)) // Player 2
+            assertEquals(PlayerTurn(Player.ONE), awaitItem())
+            stateMachine.dispatch(MakeMove(1, 0)) // Player 1
+            assertEquals(PlayerTurn(Player.TWO), awaitItem())
+            stateMachine.dispatch(MakeMove(2, 2)) // Player 2
+
+            assertEquals(GameOver(Player.TWO), awaitItem(), "Player.TWO should win")
+        }
     }
 }
