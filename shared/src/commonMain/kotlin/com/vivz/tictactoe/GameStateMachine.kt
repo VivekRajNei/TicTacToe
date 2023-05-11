@@ -14,9 +14,19 @@ enum class Player(internal val id: Int = 1) {
 }
 
 // State definitions
-sealed interface GameState
-data class PlayerTurn(val player: Player) : GameState
-data class GameOver(val winner: Player) : GameState
+sealed class GameState() {
+    val board: Array<Array<Int>> = Array(3) { Array(3) { 0 } }
+
+    fun resetBoard() {
+        for (i in 0..2) {
+            for (j in 0..2) {
+                board[i][j] = 0
+            }
+        }
+    }
+}
+data class PlayerTurn(val player: Player) : GameState()
+data class GameOver(val winner: Player) : GameState()
 
 // Action definitions
 sealed interface GameAction

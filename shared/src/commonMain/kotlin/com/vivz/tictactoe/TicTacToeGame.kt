@@ -5,18 +5,17 @@ import com.freeletics.flowredux.dsl.State
 
 // Create a State Machine class
 class GameReducer {
-    val board = Array(3) { Array(3) { 0 } }
-
     internal fun handlePlayerTurnAction(
         action: GameAction,
         state: State<PlayerTurn>
     ): ChangedState<GameState> {
+        val board = state.snapshot.board
         val currentPlayer = state.snapshot.player
         return when (action) {
             is MakeMove -> {
                 if (board[action.row][action.col] == 0) {
                     board[action.row][action.col] = currentPlayer.id
-                    if (checkWin(currentPlayer.id)) {
+                    if (checkWin(state)) {
                         state.override {
                             GameOver(currentPlayer)
                         }
@@ -31,7 +30,7 @@ class GameReducer {
                 }
             }
             is RestartGame -> {
-                resetBoard()
+                state.snapshot.resetBoard()
                 state.override {
                     PlayerTurn(Player.ONE)
                 }
@@ -45,7 +44,7 @@ class GameReducer {
     ): ChangedState<GameState> {
         return when (action) {
             is RestartGame -> {
-                resetBoard()
+                state.snapshot.resetBoard()
                 state.override {
                     PlayerTurn(Player.ONE)
                 }
@@ -56,7 +55,11 @@ class GameReducer {
         }
     }
 
-    private fun checkWin(player: Int): Boolean {
+    private fun checkWin(playerTurn: State<PlayerTurn>): Boolean {
+        val currentPlayer = playerTurn.snapshot
+        val player = currentPlayer.player.id
+        val board = currentPlayer.board
+
         // Check rows
         for (i in 0..2) {
             if (board[i][0] == player && board[i][1] == player && board[i][2] == player) {
@@ -80,13 +83,5 @@ class GameReducer {
         }
 
         return false
-    }
-
-    private fun resetBoard() {
-        for (i in 0..2) {
-            for (j in 0..2) {
-                board[i][j] = 0
-            }
-        }
     }
 }
