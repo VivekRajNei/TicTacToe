@@ -25,24 +25,24 @@ object RestartGame : GameAction
 
 
 internal class GameStateMachine(
-    private val gameEngine: TicTacToeGameEngine
+    private val reducer: GameReducer
 ) : FlowReduxStateMachine<GameState, GameAction>(initialState = PlayerTurn(Player.ONE)) {
 
     init {
         spec {
             inState<PlayerTurn> {
                 on<MakeMove> { action: MakeMove, state: State<PlayerTurn> ->
-                    gameEngine.handlePlayerTurnAction(action, state)
+                    reducer.handlePlayerTurnAction(action, state)
                 }
 
                 on<RestartGame> { action: RestartGame, state: State<PlayerTurn> ->
-                    gameEngine.handlePlayerTurnAction(action, state)
+                    reducer.handlePlayerTurnAction(action, state)
                 }
             }
 
             inState<GameOver> {
                 on<RestartGame> { action: RestartGame, state: State<GameOver> ->
-                    gameEngine.handleGameOverAction(action, state)
+                    reducer.handleGameOverAction(action, state)
                 }
             }
         }

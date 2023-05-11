@@ -4,7 +4,7 @@ import com.freeletics.flowredux.dsl.ChangedState
 import com.freeletics.flowredux.dsl.State
 
 // Create a State Machine class
-class TicTacToeGameEngine {
+class GameReducer {
     val board = Array(3) { Array(3) { 0 } }
 
     internal fun handlePlayerTurnAction(

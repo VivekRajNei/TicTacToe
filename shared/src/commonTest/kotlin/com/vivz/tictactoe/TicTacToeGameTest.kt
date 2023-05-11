@@ -12,13 +12,13 @@ class TicToeGameTest {
 
     @Test
     fun testBoardPreset() {
-        val gameEngine = TicTacToeGameEngine()
+        val gameEngine = GameReducer()
         assertTrue(gameEngine.board.flatten().all { it == 0 }, "Board preset is not set to zero")
     }
 
     @Test
     fun testFirstPlayerTurn() = runTest {
-        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+        val stateMachine = GameStateMachine(GameReducer())
         stateMachine.state.test {
             assertEquals(PlayerTurn(Player.ONE), awaitItem(), "First player is not Player1")
         }
@@ -26,7 +26,7 @@ class TicToeGameTest {
 
     @Test
     fun testSecondPlayerTurn() = runTest {
-        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+        val stateMachine = GameStateMachine(GameReducer())
 
         stateMachine.state.test {
             assertEquals(PlayerTurn(Player.ONE), awaitItem())
@@ -37,7 +37,7 @@ class TicToeGameTest {
 
     @Test
     fun testGamePlayWonByPlayer1() = runTest {
-        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+        val stateMachine = GameStateMachine(GameReducer())
 
         /**
          * Game board
@@ -69,7 +69,7 @@ class TicToeGameTest {
 
     @Test
     fun testGamePlayWonByPlayer2() = runTest {
-        val stateMachine = GameStateMachine(TicTacToeGameEngine())
+        val stateMachine = GameStateMachine(GameReducer())
 
         /**
          * Game board
@@ -103,7 +103,7 @@ class TicToeGameTest {
 
     @Test
     fun testRestartGameAndCheckGameBoard() = runTest {
-        val gameEngine = TicTacToeGameEngine()
+        val gameEngine = GameReducer()
         val stateMachine = GameStateMachine(gameEngine)
 
         stateMachine.state.test {
